@@ -21,10 +21,12 @@ Our code is partly borrowed from Face Transformer for Recognition (https://githu
 ```
 import torch
 from vit_pytorch_my.vit_face_nolandmark import ViT_face_landmark_patch8
+
 HEAD_NAME='CosFace'
 num_patches=196
 patch_size=8
 with_land=False
+
 backbone=ViT_face_landmark_patch8(
                         loss_type = HEAD_NAME,
                         GPU_ID = None,
@@ -47,5 +49,13 @@ embeddings= backbone(input_data)
 
 
 
+## Citation
+```
+@article{sun2022part,
+  title={Part-based Face Recognition with Vision Transformers},
+  author={Sun, Zhonglin and Tzimiropoulos, Georgios},
+  year={2022}
+}
+```
 
 
