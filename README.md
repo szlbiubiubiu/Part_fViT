@@ -11,9 +11,9 @@ Our code is partly borrowed from Face Transformer for Recognition (https://githu
 
 ## To Do
 - [x] [baseline fViT](vit_pytorch_my/vit_face_nolandmark)
-- [ ] [Part fViT]
-- [ ] [Checkpoints]
-- [ ] [Training scripts]
+- [ ] Part fViT
+- [ ] Checkpoints
+- [ ] Training scripts
 <!-- - [x] [ArcFace_mxnet (CVPR'2019)](recognition/arcface_mxnet) -->
 
 ## Usage
