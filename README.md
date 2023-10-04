@@ -1,4 +1,4 @@
-# Part fViT
+# Part-based Face Recognition with Vision Transformers
 
 This is the Pytorch implementation project of our BMVC 2022 paper
 
