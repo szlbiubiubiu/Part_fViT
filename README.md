@@ -7,10 +7,10 @@ This is the Pytorch implementation project of our BMVC 2022 paper
 
 
 
-Our code is partly browed from face transformer for recognition (https://github.com/zhongyy/Face-Transformer) and Insightface(https://github.com/deepinsight/insightface).
+Our code is partly borrowed from Face Transformer for Recognition (https://github.com/zhongyy/Face-Transformer) and Insightface(https://github.com/deepinsight/insightface).
 
 ## To Do
-- [x] baseline fViT
+- [x] baseline fViT (vit_pytorch_my/vit_face_nolandmark)
 - [ ] part fViT
 - [ ] Checkpoints
 - [ ] Training scripts
