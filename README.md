@@ -18,7 +18,7 @@ Our code is partly borrowed from Face Transformer for Recognition (https://githu
 
 ## Usage
 1.fViT
-'''
+```
 import torch
 from vit_pytorch_my.vit_face_nolandmark import ViT_face_landmark_patch8
 HEAD_NAME='CosFace'
@@ -43,7 +43,7 @@ backbone=ViT_face_landmark_patch8(
 
 input_data=torch.rand(1,3,112,112)
 embeddings= backbone(input_data)
-'''
+```
 
 
 
