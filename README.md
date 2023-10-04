@@ -51,10 +51,13 @@ embeddings= backbone(input_data)
 
 ## Citation
 ```
-@article{sun2022part,
-  title={Part-based Face Recognition with Vision Transformers},
-  author={Sun, Zhonglin and Tzimiropoulos, Georgios},
-  year={2022}
+@inproceedings{Sun_2022_BMVC,
+author    = {Zhonglin Sun and Georgios Tzimiropoulos},
+title     = {Part-based Face Recognition with Vision Transformers},
+booktitle = {33rd British Machine Vision Conference 2022, {BMVC} 2022, London, UK, November 21-24, 2022},
+publisher = {{BMVA} Press},
+year      = {2022},
+url       = {https://bmvc2022.mpi-inf.mpg.de/0611.pdf}
 }
 ```
 
