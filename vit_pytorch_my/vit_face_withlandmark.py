@@ -375,6 +375,155 @@ class Transformer(nn.Module):
 
 
 
+# class ArcFace(nn.Module):
+#     r"""Implement of ArcFace (https://arxiv.org/pdf/1801.07698v1.pdf):
+#         Args:
+#             in_features: size of each input sample
+#             out_features: size of each output sample
+#             device_id: the ID of GPU where the model will be trained by model parallel.
+#                        if device_id=None, it will be trained on CPU without model parallel.
+#             s: norm of input feature
+#             m: margin
+#             cos(theta+m)
+#         """
+
+#     def __init__(self, in_features, out_features, device_id, s=64.0, m=0.50, easy_margin=False):
+#         super(ArcFace, self).__init__()
+#         self.in_features = in_features
+#         self.out_features = out_features
+#         self.device_id = device_id
+
+#         self.s = s
+#         self.m = m
+
+#         self.weight = Parameter(torch.FloatTensor(out_features, in_features))
+#         nn.init.xavier_uniform_(self.weight)
+
+#         self.easy_margin = easy_margin
+#         self.cos_m = math.cos(m)
+#         self.sin_m = math.sin(m)
+#         self.th = math.cos(math.pi - m)
+#         self.mm = math.sin(math.pi - m) * m
+
+#     def forward(self, input, label):
+#         # --------------------------- cos(theta) & phi(theta) ---------------------------
+#         if self.device_id == None:
+#             cosine = F.linear(F.normalize(input), F.normalize(self.weight))
+#         else:
+#             x = input
+#             sub_weights = torch.chunk(self.weight, len(self.device_id), dim=0)
+#             temp_x = x.cuda(self.device_id[0])
+#             weight = sub_weights[0].cuda(self.device_id[0])
+#             cosine = F.linear(F.normalize(temp_x), F.normalize(weight))
+#             for i in range(1, len(self.device_id)):
+#                 temp_x = x.cuda(self.device_id[i])
+#                 weight = sub_weights[i].cuda(self.device_id[i])
+#                 cosine = torch.cat((cosine, F.linear(F.normalize(temp_x), F.normalize(weight)).cuda(self.device_id[0])),
+#                                    dim=1)
+#         cosine=cosine.float()
+#         sine = torch.sqrt(1.0 - torch.pow(cosine, 2))
+#         phi = cosine * self.cos_m - sine * self.sin_m
+#         phi=phi.float()
+#         # pdb.set_trace()
+#         if self.easy_margin:
+#             phi = torch.where(cosine > 0, phi, cosine)
+#         else:
+#             phi = torch.where(cosine > self.th, phi, cosine - self.mm)
+#         # --------------------------- convert label to one-hot ---------------------------
+#         # pdb.set_trace()
+#         if len(label.shape)>1:
+#             if self.device_id == None:
+#                 one_hot=label.cuda()
+#             else:
+#                 one_hot=label.cuda(self.device_id[0])
+#         else:
+#             one_hot = torch.zeros(cosine.size())
+#             if self.device_id != None:
+#                 one_hot = one_hot.cuda(self.device_id[0])
+#             else:
+#                 in_device=label.device
+#                 one_hot=one_hot.to(in_device)
+#             one_hot.scatter_(1, label.view(-1, 1).long(), 1)
+#         # -------------torch.where(out_i = {x_i if condition_i else y_i) -------------
+#         output = (one_hot * phi) + (
+#                     (1.0 - one_hot) * cosine)  # you can use torch.where if your torch.__version__ is 0.4
+#         output *= self.s
+
+#         return output
+
+
+# class CosFace(nn.Module):
+#     r"""Implement of CosFace (https://arxiv.org/pdf/1801.09414.pdf):
+#     Args:
+#         in_features: size of each input sample
+#         out_features: size of each output sample
+#         device_id: the ID of GPU where the model will be trained by model parallel.
+#                        if device_id=None, it will be trained on CPU without model parallel.
+#         s: norm of input feature
+#         m: margin
+#         cos(theta)-m
+#     """
+
+#     def __init__(self, in_features, out_features, device_id, s=64.0, m=0.4):#0.35
+#         super(CosFace, self).__init__()
+#         self.in_features = in_features
+#         self.out_features = out_features
+#         self.device_id = device_id
+#         self.s = s
+#         self.m = m
+#         print("self.device_id", self.device_id)
+#         self.weight = Parameter(torch.FloatTensor(out_features, in_features))
+#         nn.init.xavier_uniform_(self.weight)
+
+#     def forward(self, input, label):
+#         # --------------------------- cos(theta) & phi(theta) ---------------------------
+
+#         if self.device_id == None:
+#             cosine = F.linear(F.normalize(input), F.normalize(self.weight))
+#         else:
+#             x = input
+#             sub_weights = torch.chunk(self.weight, len(self.device_id), dim=0)
+#             temp_x = x.cuda(self.device_id[0])
+#             weight = sub_weights[0].cuda(self.device_id[0])
+#             cosine = F.linear(F.normalize(temp_x), F.normalize(weight))
+#             for i in range(1, len(self.device_id)):
+#                 temp_x = x.cuda(self.device_id[i])
+#                 weight = sub_weights[i].cuda(self.device_id[i])
+#                 cosine = torch.cat((cosine, F.linear(F.normalize(temp_x), F.normalize(weight)).cuda(self.device_id[0])),
+#                                    dim=1)
+#         phi = cosine - self.m
+#         # --------------------------- convert label to one-hot ---------------------------
+#         one_hot = torch.zeros(cosine.size())
+#         # pdb.set_trace()
+#         if len(label.shape)>1:
+#             if self.device_id == None:
+#                 one_hot=label.cuda()
+#             else:
+#                 one_hot=label.cuda(self.device_id[0])
+#         else:
+#             if self.device_id != None:
+#                 one_hot = one_hot.cuda(self.device_id[0])
+#             # one_hot = one_hot.cuda() if cosine.is_cuda else one_hot
+
+#                 one_hot.scatter_(1, label.cuda(self.device_id[0]).view(-1, 1).long(), 1)
+#             else:
+#                 in_device=label.device
+#                 one_hot=one_hot.to(in_device)
+#                 one_hot.scatter_(1, label.view(-1, 1).long(), 1)
+#         # -------------torch.where(out_i = {x_i if condition_i else y_i) -------------
+#         output = (one_hot * phi) + (
+#                     (1.0 - one_hot) * cosine)  # you can use torch.where if your torch.__version__ is 0.4
+#         output *= self.s
+
+#         return output
+
+#     def __repr__(self):
+#         return self.__class__.__name__ + '(' \
+#                + 'in_features = ' + str(self.in_features) \
+#                + ', out_features = ' + str(self.out_features) \
+#                + ', s = ' + str(self.s) \
+#                + ', m = ' + str(self.m) + ')'
+
 class ViT_face_landmark_patch8(nn.Module):
     def __init__(self, *, loss_type, GPU_ID, num_class, image_size, patch_size, dim, depth, heads, mlp_dim, pool = 'cls',num_patches=None, channels = 3, dim_head = 64, dropout = 0., emb_dropout = 0.,fp16=True,with_land=False):
         super().__init__()#cls
@@ -390,7 +539,36 @@ class ViT_face_landmark_patch8(nn.Module):
         self.fp16=fp16
         self.row_num=int(np.sqrt(num_patches)/2)#49
         self.row_num=int(np.sqrt(num_patches))#196
-        
+        if self.with_land:
+            self.stn=MobileNetV3_backbone(mode='large')
+            # # # pdb.set_trace()
+            # # # self.stn= ViT_face_stn_patch8(
+            # # #                  loss_type = 'None',
+            # # #                  GPU_ID = GPU_ID,
+            # # #                  num_class = num_class,
+            # # #                  image_size=112,
+            # # #                  patch_size=8,#8
+            # # #                  dim=96,#512
+            # # #                  depth=12,#20
+            # # #                  heads=3,#8
+            # # #                  mlp_dim=1024,
+            # # #                  dropout=0.1,
+            # # #                  emb_dropout=0.1
+            # # #              )
+            # # #resnet
+            # # self.stn=models.resnet50()
+            # # self.stn.fc=nn.Sequential()
+            # # # hybrid_dimension=50
+            # # # drop_ratio=0.9
+
+            self.output_layer = nn.Sequential(
+                nn.Dropout(p=0.5),    # refer to paper section 6
+                nn.Linear(160, self.row_num*self.row_num*2),#2048
+            )
+            
+            # self.output_layer = nn.Linear(96, int(self.row_num*self.row_num*2))#49*2,6        mobilenet 96 irse:128
+            # self.patch_shape=torch.tensor([2*patch_size,2*patch_size])#49
+            self.patch_shape=torch.tensor([patch_size,patch_size])#196
         self.theta=0
 
         # self.drop_2d=torch.nn.Dropout2d(p=0.1)
@@ -441,7 +619,26 @@ class ViT_face_landmark_patch8(nn.Module):
             # x=x.flip(1)
             # x=torch.from_numpy(x.cpu().numpy()[:,::-1,:,:].copy()).cuda()
         # if self.with_land:
+        if self.with_land:
+            # x=x/255.0*2-1  #no mean
+            theta=self.stn(x)#.forward(x)            #with original stn
+
+
+            theta = theta.mean(dim=(-2, -1))#average pooling   for cnn
+            theta=self.output_layer(theta)
             
+            #min max scale
+            t_max=torch.max(theta,1)[0]#.repeat(1,49*2)
+            t_max=torch.unsqueeze(t_max,dim=1).repeat(1,self.row_num*self.row_num*2)
+            t_min=torch.min(theta,1)[0]#.repeat(1,49*2)
+            t_min=torch.unsqueeze(t_min,dim=1).repeat(1,self.row_num*self.row_num*2)
+            theta=(theta-t_min)/(t_max-t_min)*111
+
+
+            theta=theta.view(-1,self.row_num*self.row_num,2)
+            self.theta=theta#.detach()
+
+            x=extract_patches_pytorch_gridsample(x,theta,patch_shape=self.patch_shape,num_landm=int(self.row_num*self.row_num))
             
         if len(x.shape)==4:
             # x=x/255.0*2-1  #no mean
@@ -485,3 +682,46 @@ class ViT_face_landmark_patch8(nn.Module):
             else:
                 return emb
             # return emb
+
+
+def extract_patches_pytorch_gridsample(imgs, landmarks, patch_shape,num_landm=49):#numpy
+    """ Extracts patches from an image with gradient.
+    Args:
+        imgs: a numpy array of dimensions [batch_size, width, height, channels]
+        landmarks: a numpy array of dimensions [batch_size, num_landm, 2]
+        patch_shape: [width, height]
+        num_landm: number of landmarks: int
+    Returns:
+        A reconstructed imaged with landmark only: [batch_size,channels, width, height]
+    """
+    # pdb.set_trace()
+    device=landmarks.device
+
+    img_shape=imgs.shape[2]
+    # pdb.set_trace()
+    list_patches = []
+    patch_half_shape=patch_shape/2
+    start = -patch_half_shape
+    end = patch_half_shape
+    
+    sampling_grid = torch.meshgrid(torch.arange(start[0],end[0]),torch.arange(start[1],end[1]))
+    sampling_grid=torch.stack(sampling_grid,dim=0).to(device)
+
+    sampling_grid=torch.transpose(torch.transpose(sampling_grid,0,2),0,1)
+    for i in range(num_landm):
+        
+        land=landmarks[:,i,:]
+
+        patch_grid = (sampling_grid[None, :, :, :] + land[:, None, None, :])/(img_shape*0.5)-1
+        sing_land_patch= F.grid_sample(imgs, patch_grid,align_corners=False)
+        list_patches.append(sing_land_patch)
+    # pdb.set_trace()
+    list_patches=torch.stack(list_patches,dim=2)#.shape
+    B, c, patches_num,w,h = list_patches.shape
+    row=int(np.sqrt(patches_num))
+    list_patches=list_patches.reshape(B,c,row,row,w,h)
+    list_patches=list_patches.permute(0,1,2,4,3,5)
+    list_patches=list_patches.reshape(B,c,w*int(np.sqrt(patches_num)),h*int(np.sqrt(patches_num)))
+                      
+    return list_patches
+
