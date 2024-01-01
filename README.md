@@ -12,7 +12,7 @@ Our code is partly borrowed from Face Transformer for Recognition (https://githu
 ## To Do
 - [x] [baseline fViT](vit_pytorch_my/vit_face_nolandmark)
 - [x] [Part fViT](vit_pytorch_my/vit_face_withlandmark)
-- [x] Checkpoints[Part fViT](https://drive.google.com/file/d/1ev-y0aOmt1mhQCCZwh3ef204ibszi1Rl/view?usp=sharing)
+- [x] Checkpoints:[Part fViT](https://drive.google.com/file/d/1ev-y0aOmt1mhQCCZwh3ef204ibszi1Rl/view?usp=sharing)
 - [ ] Training scripts
 
 
