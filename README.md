@@ -9,6 +9,9 @@ This is the Pytorch implementation project of our BMVC 2022 paper
 
 Our code is partly borrowed from Face Transformer for Recognition (https://github.com/zhongyy/Face-Transformer) and Insightface(https://github.com/deepinsight/insightface).
 
+## News
+Our paper 'LAFS: Landmark-based Facial Self-supervised Learning for Face Recognition' is accepted to CVPR2024!
+
 ## To Do
 - [x] [baseline fViT](vit_pytorch_my/vit_face_nolandmark)
 - [x] [Part fViT](vit_pytorch_my/vit_face_withlandmark)
