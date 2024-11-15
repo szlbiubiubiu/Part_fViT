@@ -5,11 +5,16 @@ This is the Pytorch implementation project of our BMVC 2022 paper
 >[Part-based Face Recognition with Vision Transformers ](https://bmvc2022.mpi-inf.mpg.de/0611.pdf). 
 ><br>Zhonglin Sun, Georgios Tzimiropoulos<br>
 
+## News
+The extended version of Part fViT is accepted at CVPR 2024: [LAFS: Landmark-based Facial Self-supervised Learning for Face Recognition](LAFS: Landmark-based Facial Self-supervised Learning for Face Recognition). Please refers to the [LAFS repo](https://github.com/szlbiubiubiu/LAFS_CVPR2024) for the code of Part fViT.
 
 
-Our code is partly borrowed from Face Transformer for Recognition (https://github.com/zhongyy/Face-Transformer) and Insightface(https://github.com/deepinsight/insightface).
+
+
 
 ## To Do
+Our code is partly borrowed from Face Transformer for Recognition (https://github.com/zhongyy/Face-Transformer) and Insightface(https://github.com/deepinsight/insightface).
+
 - [x] [baseline fViT](vit_pytorch_my/vit_face_nolandmark)
 - [x] [Part fViT](vit_pytorch_my/vit_face_withlandmark)
 - [x] Checkpoints: [Part fViT](https://drive.google.com/file/d/1ev-y0aOmt1mhQCCZwh3ef204ibszi1Rl/view?usp=sharing) (Performance on IJB-C: TAR@FAR=1e-4 97.29)
