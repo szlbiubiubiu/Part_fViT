@@ -6,7 +6,7 @@ This is the Pytorch implementation project of our BMVC 2022 paper
 ><br>Zhonglin Sun, Georgios Tzimiropoulos<br>
 
 ## News
-The extended version of Part fViT is accepted at CVPR 2024: [LAFS: Landmark-based Facial Self-supervised Learning for Face Recognition](LAFS: Landmark-based Facial Self-supervised Learning for Face Recognition). Please refers to the [LAFS repo](https://github.com/szlbiubiubiu/LAFS_CVPR2024) for the code of Part fViT.
+The extended version of Part fViT is accepted at CVPR 2024: [LAFS: Landmark-based Facial Self-supervised Learning for Face Recognition](https://openaccess.thecvf.com/content/CVPR2024/papers/Sun_LAFS_Landmark-based_Facial_Self-supervised_Learning_for_Face_Recognition_CVPR_2024_paper.pdf). Please refers to the [LAFS repo](https://github.com/szlbiubiubiu/LAFS_CVPR2024) for the code of Part fViT.
 
 
 
