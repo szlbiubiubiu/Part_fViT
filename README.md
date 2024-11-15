@@ -12,8 +12,6 @@ The extended version of Part fViT is accepted at CVPR 2024: [LAFS: Landmark-base
 
 
 
-## News
-Our paper 'LAFS: Landmark-based Facial Self-supervised Learning for Face Recognition' is accepted to CVPR2024!
 
 ## To Do
 Our code is partly borrowed from Face Transformer for Recognition (https://github.com/zhongyy/Face-Transformer) and Insightface(https://github.com/deepinsight/insightface).
